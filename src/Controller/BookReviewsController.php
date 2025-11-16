@@ -6,7 +6,7 @@ use App\Entity\BookReviews;
 use App\Form\BookReviewsType;
 use App\Repository\BookReviewsRepository;
 use App\Service\BookReviewsService;
-use App\Service\LibrarySevice;
+use App\Services\LibrarySevice;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

@@ -5,21 +5,26 @@ namespace App\Controller;
 use App\Entity\Authors;
 use App\Form\AuthorsType;
 use App\Repository\AuthorsRepository;
-//use Doctrine\ORM\EntityManagerInterface;
-
-//use App\Service\AuthorsService;
-use App\Service\LibrarySevice;
+use App\Services\LibrarySevice;
+use App\Services\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
-use App\Service\ValidatorService;
+use App\Services\RequestCheckerService;
 
 #[Route('/authors')]
 final class AuthorsController extends AbstractController
 {
+
+    private const REQUIRED_FIELDS_FOR_CREATE_AUTHOR = [
+        'first_name',
+        'second_name',
+    ];
+
+    public function __construct(private RequestCheckerService $requestCheckerService){}
+
     #[Route(name: 'app_authors_index', methods: ['GET'])]
     public function index(AuthorsRepository $authorsRepository): Response
     {
@@ -34,8 +39,13 @@ final class AuthorsController extends AbstractController
         $author = new Authors();
         $form = $this->createForm(AuthorsType::class, $author);
         $form->handleRequest($request);
+        $data = $request->request->all();
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->requestCheckerService->check($data, self::REQUIRED_FIELDS_FOR_CREATE_AUTHOR);
+
+
             $errors = $validatorService->validateAuthor($author);
 
             if (empty($errors)) {

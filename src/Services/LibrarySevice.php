@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Service;
+namespace App\Services;
 
 use App\Entity\Authors;
-use App\Entity\Readers;
 use App\Entity\BookCopies;
-use App\Entity\Borrowings;
+use App\Entity\BookReviews;
 use App\Entity\Books;
+use App\Entity\Borrowings;
 use App\Entity\Genres;
 use App\Entity\Librarians;
-use App\Entity\BookReviews;
 use App\Entity\Publishers;
+use App\Entity\Readers;
 use App\Entity\Returns;
 use Doctrine\ORM\EntityManagerInterface;
 

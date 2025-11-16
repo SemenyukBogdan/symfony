@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Entity\Readers;
 use App\Form\ReadersType;
 use App\Repository\ReadersRepository;
-use App\Service\LibrarySevice;
-use App\Service\ValidatorService;
+use App\Services\LibrarySevice;
+use App\Services\RequestCheckerService;
+use App\Services\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,15 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/readers')]
 final class ReadersController extends AbstractController
 {
+
+    private const REQUIRED_FIELDS_FOR_CREATE_Reader = [
+        'phone',
+        'full_name',
+        'email'
+    ];
+
+    public function __construct(private RequestCheckerService $requestCheckerService){}
+
     #[Route(name: 'app_readers_index', methods: ['GET'])]
     public function index(ReadersRepository $readersRepository): Response
     {
@@ -32,6 +42,9 @@ final class ReadersController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $data = $request->request->all();
+            $this->requestCheckerService->check($data, self::REQUIRED_FIELDS_FOR_CREATE_Reader);
+            $this->requestCheckerService->validateRequestDataByConstraints($reader);
 
             $errors = $validatorService->validateReader($reader);
             if (empty($errors)) {
