@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Librarians{% endblock %}
+
+{% block body %}
+    <h1>Librarians</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ librarian.id }}</td>
+            </tr>
+            <tr>
+                <th>Full_name</th>
+                <td>{{ librarian.fullName }}</td>
+            </tr>
+            <tr>
+                <th>Position</th>
+                <td>{{ librarian.position }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ librarian.phone }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_librarians_index') }}">back to list</a>
+
+    <a href="{{ path('app_librarians_edit', {'id': librarian.id}) }}">edit</a>
+
+    {{ include('librarians/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Publishers{% endblock %}
+
+{% block body %}
+    <h1>Create new Publishers</h1>
+
+    {{ include('publishers/_form.html.twig') }}
+
+    <a href="{{ path('app_publishers_index') }}">back to list</a>
+{% endblock %}
