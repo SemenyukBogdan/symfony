@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PublishersRepository::class)]
-class Publishers
+class Publisher
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -26,9 +26,9 @@ class Publishers
     private ?int $founded_year = null;
 
     /**
-     * @var Collection<int, Books>
+     * @var Collection<int, Book>
      */
-    #[ORM\OneToMany(targetEntity: Books::class, mappedBy: 'publisher_id')]
+    #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'publisher_id')]
     private Collection $books;
 
     public function __construct()
@@ -78,14 +78,14 @@ class Publishers
     }
 
     /**
-     * @return Collection<int, Books>
+     * @return Collection<int, Book>
      */
     public function getBooks(): Collection
     {
         return $this->books;
     }
 
-    public function addBook(Books $book): static
+    public function addBook(Book $book): static
     {
         if (!$this->books->contains($book)) {
             $this->books->add($book);
@@ -95,7 +95,7 @@ class Publishers
         return $this;
     }
 
-    public function removeBook(Books $book): static
+    public function removeBook(Book $book): static
     {
         if ($this->books->removeElement($book)) {
             // set the owning side to null (unless already changed)

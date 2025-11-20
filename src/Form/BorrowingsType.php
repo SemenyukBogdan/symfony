@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use App\Entity\BookCopies;
-use App\Entity\Borrowings;
-use App\Entity\Librarians;
-use App\Entity\Readers;
+use App\Entity\BookCopy;
+use App\Entity\Borrowing;
+use App\Entity\Librarian;
+use App\Entity\Reader;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,15 +19,15 @@ class BorrowingsType extends AbstractType
             ->add('borrowDate')
             ->add('dueDate')
             ->add('bookCopy', EntityType::class, [
-                'class' => BookCopies::class,
+                'class' => BookCopy::class,
                 'choice_label' => 'id',
             ])
             ->add('reader', EntityType::class, [
-                'class' => Readers::class,
+                'class' => Reader::class,
                 'choice_label' => 'id',
             ])
             ->add('librarian', EntityType::class, [
-                'class' => Librarians::class,
+                'class' => Librarian::class,
                 'choice_label' => 'id',
             ])
         ;
@@ -36,7 +36,7 @@ class BorrowingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Borrowings::class,
+            'data_class' => Borrowing::class,
         ]);
     }
 }

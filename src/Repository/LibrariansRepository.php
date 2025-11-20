@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\Librarians;
+use App\Entity\Librarian;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Librarians>
+ * @extends ServiceEntityRepository<Librarian>
  */
 class LibrariansRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Librarians::class);
+        parent::__construct($registry, Librarian::class);
     }
 
     //    /**

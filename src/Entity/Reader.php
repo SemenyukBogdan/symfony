@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Borrowings;
+use App\Entity\Borrowing;
 use App\Repository\ReadersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReadersRepository::class)]
-class Readers
+class Reader
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,9 +30,9 @@ class Readers
     private ?\DateTime $registration_date = null;
 
     /**
-     * @var Collection<int, Borrowings>
+     * @var Collection<int, Borrowing>
      */
-    #[ORM\OneToMany(mappedBy: 'reader', targetEntity: Borrowings::class)]
+    #[ORM\OneToMany(mappedBy: 'reader', targetEntity: Borrowing::class)]
     private Collection $borrowings;
 
     public function __construct()
@@ -94,7 +94,7 @@ class Readers
     }
 
     /**
-     * @return Collection<int, Borrowings>
+     * @return Collection<int, Borrowing>
      */
     public function getBorrowings(): Collection
     {
@@ -103,7 +103,7 @@ class Readers
 
 
 
-    public function addBorrowing(Borrowings $borrowing): static
+    public function addBorrowing(Borrowing $borrowing): static
     {
         if (!$this->borrowings->contains($borrowing)) {
             $this->borrowings->add($borrowing);
@@ -113,7 +113,7 @@ class Readers
         return $this;
     }
 
-    public function removeBorrowing(Borrowings $borrowing): static
+    public function removeBorrowing(Borrowing $borrowing): static
     {
         if ($this->borrowings->removeElement($borrowing)) {
             // если у выдачи до сих пор этот reader – обнуляем

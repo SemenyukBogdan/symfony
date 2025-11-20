@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Books;
+use App\Entity\Book;
 use App\Repository\GenresRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GenresRepository::class)]
-class Genres
+class Genre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,9 +21,9 @@ class Genres
     private ?string $name = null;
 
     /**
-     * @var Collection<int, Books>
+     * @var Collection<int, Book>
      */
-    #[ORM\OneToMany(targetEntity: Books::class, mappedBy: 'пgenre_id')]
+    #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'пgenre_id')]
     private Collection $books;
 
     public function __construct()
@@ -49,14 +49,14 @@ class Genres
     }
 
     /**
-     * @return Collection<int, Books>
+     * @return Collection<int, Book>
      */
     public function getBooks(): Collection
     {
         return $this->books;
     }
 
-    public function addBook(Books $book): static
+    public function addBook(Book $book): static
     {
         if (!$this->books->contains($book)) {
             $this->books->add($book);
@@ -66,7 +66,7 @@ class Genres
         return $this;
     }
 
-    public function removeBook(Books $book): static
+    public function removeBook(Book $book): static
     {
         if ($this->books->removeElement($book)) {
             // set the owning side to null (unless already changed)

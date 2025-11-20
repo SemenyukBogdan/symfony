@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\BookCopies;
-use App\Entity\Books;
+use App\Entity\BookCopy;
+use App\Entity\Book;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +17,7 @@ class BookCopiesType extends AbstractType
             ->add('inventory_number')
             ->add('shelf_location')
             ->add('book_id', EntityType::class, [
-                'class' => books::class,
+                'class' => Book::class,
                 'choice_label' => 'id',
             ])
         ;
@@ -26,7 +26,7 @@ class BookCopiesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => BookCopies::class,
+            'data_class' => BookCopy::class,
         ]);
     }
 }

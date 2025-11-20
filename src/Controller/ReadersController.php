@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Readers;
+use App\Entity\Reader;
 use App\Form\ReadersType;
 use App\Repository\ReadersRepository;
+use App\Services\BooksService\BooksService;
 use App\Services\LibrarySevice;
+use App\Services\ReadersService\ReadersService;
 use App\Services\RequestCheckerService;
 use App\Services\ValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,14 +22,33 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReadersController extends AbstractController
 {
 
-    private const REQUIRED_FIELDS_FOR_CREATE_Reader = [
+    private const REQUIRED_FIELDS_FOR_CREATE_READER = [
         'phone',
         'full_name',
         'email'
     ];
 
-    public function __construct(private RequestCheckerService $requestCheckerService){}
-
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private ReadersService $readersService,
+        private RequestCheckerService $requestCheckerService
+    ) {}
+    /**
+     * @throws Exception
+     */
+    #[Route('/', name: 'app_post_products_item', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $this->requestCheckerService->check($requestData,self::REQUIRED_FIELDS_FOR_CREATE_READER);
+    $product = $this->readersService->createReader(
+        $requestData['full_name'],
+        $requestData['phone'],
+        $requestData['email'],
+    );
+    $this->entityManager->flush();
+    return new JsonResponse($product, Response::HTTP_CREATED);
+}
     #[Route(name: 'app_readers_index', methods: ['GET'])]
     public function index(ReadersRepository $readersRepository): Response
     {
@@ -37,25 +60,25 @@ final class ReadersController extends AbstractController
     #[Route('/new', name: 'app_readers_new', methods: ['GET', 'POST'])]
     public function new(Request $request, LibrarySevice $libraryService, ValidatorService $validatorService): Response
     {
-        $reader = new Readers();
+        $reader = new Reader();
         $form = $this->createForm(ReadersType::class, $reader);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $request->request->all();
-            $this->requestCheckerService->check($data, self::REQUIRED_FIELDS_FOR_CREATE_Reader);
-            $this->requestCheckerService->validateRequestDataByConstraints($reader);
-
-            $errors = $validatorService->validateReader($reader);
-            if (empty($errors)) {
-                $libraryService->createReader($reader);
-            }
-            else{
-                return $this->render('readers/new.html.twig', $errors); // Вивод ошибк
-            }
-
-            return $this->redirectToRoute('app_readers_index', [], Response::HTTP_SEE_OTHER);
-        }
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $data = $request->request->all();
+//            $this->requestCheckerService->check($data, self::REQUIRED_FIELDS_FOR_CREATE_Reader);
+//            $this->requestCheckerService->validateRequestDataByConstraints($reader);
+//
+//            $errors = $validatorService->validateReader($reader);
+//            if (empty($errors)) {
+//                $libraryService->createReader($reader);
+//            }
+//            else{
+//                return $this->render('readers/new.html.twig', $errors); // Вивод ошибк
+//            }
+//
+//            return $this->redirectToRoute('app_readers_index', [], Response::HTTP_SEE_OTHER);
+//        }
 
         return $this->render('readers/new.html.twig', [
             'reader' => $reader,
@@ -64,7 +87,7 @@ final class ReadersController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_readers_show', methods: ['GET'])]
-    public function show(Readers $reader): Response
+    public function show(Reader $reader): Response
     {
         return $this->render('readers/show.html.twig', [
             'reader' => $reader,
@@ -72,7 +95,7 @@ final class ReadersController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_readers_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Readers $reader, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Reader $reader, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ReadersType::class, $reader);
         $form->handleRequest($request);
@@ -90,7 +113,7 @@ final class ReadersController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_readers_delete', methods: ['POST'])]
-    public function delete(Request $request, Readers $reader, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Reader $reader, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$reader->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($reader);

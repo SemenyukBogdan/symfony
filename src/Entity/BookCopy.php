@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Entity\Books;
+use App\Entity\Book;
 use App\Repository\BookCopiesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BookCopiesRepository::class)]
-class BookCopies
+class BookCopy
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +17,7 @@ class BookCopies
 
     #[ORM\ManyToOne(inversedBy: 'book_copy_id')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?books $book_id = null;
+    private ?Book $book_id = null;
 
     #[ORM\Column]
     private ?int $inventory_number = null;
@@ -30,12 +30,12 @@ class BookCopies
         return $this->id;
     }
 
-    public function getBookId(): ?books
+    public function getBookId(): ?Book
     {
         return $this->book_id;
     }
 
-    public function setBookId(?books $book_id): static
+    public function setBookId(?Book $book_id): static
     {
         $this->book_id = $book_id;
 

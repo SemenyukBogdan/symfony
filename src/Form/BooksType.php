@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use App\Entity\Authors;
-use App\Entity\Books;
-use App\Entity\Genres;
-use App\Entity\Publishers;
+use App\Entity\Author;
+use App\Entity\Book;
+use App\Entity\Genre;
+use App\Entity\Publisher;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,15 +20,15 @@ class BooksType extends AbstractType
             ->add('year')
             ->add('description')
             ->add('author_id', EntityType::class, [
-                'class' => Authors::class,
+                'class' => Author::class,
                 'choice_label' => 'id',
             ])
             ->add('пgenre_id', EntityType::class, [
-                'class' => genres::class,
+                'class' => Genre::class,
                 'choice_label' => 'id',
             ])
             ->add('publisher_id', EntityType::class, [
-                'class' => Publishers::class,
+                'class' => Publisher::class,
                 'choice_label' => 'id',
             ])
         ;
@@ -37,7 +37,7 @@ class BooksType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Books::class,
+            'data_class' => Book::class,
         ]);
     }
 }

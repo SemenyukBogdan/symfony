@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Entity\Authors;
-use App\Entity\BookCopies;
-use App\Entity\BookReviews;
-use App\Entity\Books;
-use App\Entity\Borrowings;
-use App\Entity\Genres;
-use App\Entity\Librarians;
-use App\Entity\Publishers;
-use App\Entity\Readers;
+use App\Entity\Author;
+use App\Entity\BookCopy;
+use App\Entity\BookReview;
+use App\Entity\Book;
+use App\Entity\Borrowing;
+use App\Entity\Genre;
+use App\Entity\Librarian;
+use App\Entity\Publisher;
+use App\Entity\Reader;
 use App\Entity\Returns;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -24,51 +24,51 @@ class LibrarySevice
         $this->entityManager = $entityManager;
     }
 
-    public function createAuthor(Authors $author): void
+    public function createAuthor(Author $author): void
     {
         $this->entityManager->persist($author);
         $this->entityManager->flush();
     }
- public function createBookCopy(BookCopies $bookCopies): void
+ public function createBookCopy(BookCopy $bookCopies): void
     {
         $this->entityManager->persist($bookCopies);
         $this->entityManager->flush();
     }
 
-    public function createBookReview(BookReviews $bookReview): void
+    public function createBookReview(BookReview $bookReview): void
     {
         $this->entityManager->persist($bookReview);
         $this->entityManager->flush();
     }
 
-    public function createReader(Readers $reader): void
+    public function createReader(Reader $reader): void
     {
         $this->entityManager->persist($reader);
         $this->entityManager->flush();
     }
 
-    public function createBook(Books $book): void
+    public function createBook(Book $book): void
     {
         $this->entityManager->persist($book);
         $this->entityManager->flush();
     }
 
-    public function createBorrowing(Borrowings $borrowing): void
+    public function createBorrowing(Borrowing $borrowing): void
     {
         $this->entityManager->persist($borrowing);
         $this->entityManager->flush();
     }
 
-    public function createGenres(Genres $genres): void
+    public function createGenres(Genre $genres): void
     {
         $this->entityManager->persist($genres);
         $this->entityManager->flush();
     }
-    public function createLibrarian(Librarians $librarian): void{
+    public function createLibrarian(Librarian $librarian): void{
         $this->entityManager->persist($librarian);
         $this->entityManager->flush();
     }
-    public function createPublisher(Publishers $publisher): void{
+    public function createPublisher(Publisher $publisher): void{
         $this->entityManager->persist($publisher);
         $this->entityManager->flush();
     }

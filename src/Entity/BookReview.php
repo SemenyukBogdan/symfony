@@ -2,22 +2,26 @@
 
 namespace App\Entity;
 
-use App\Entity\Readers;
+use App\Entity\Reader;
 use App\Repository\BookReviewsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BookReviewsRepository::class)]
-class BookReviews
+class BookReview
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(targetEntity: Book::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Book $book = null;
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?readers $reader_id = null;
+    private ?Reader $reader_id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $rating = null;
@@ -33,12 +37,24 @@ class BookReviews
         return $this->id;
     }
 
-    public function getReaderId(): ?readers
+    public function getBook(): ?Book
+    {
+        return $this->book;
+    }
+
+    public function setBook(?Book $book): static
+    {
+        $this->book = $book;
+
+        return $this;
+    }
+
+    public function getReaderId(): ?Reader
     {
         return $this->reader_id;
     }
 
-    public function setReaderId(?readers $reader_id): static
+    public function setReaderId(?Reader $reader_id): static
     {
         $this->reader_id = $reader_id;
 

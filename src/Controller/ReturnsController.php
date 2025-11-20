@@ -5,8 +5,12 @@ namespace App\Controller;
 use App\Entity\Returns;
 use App\Form\ReturnsType;
 use App\Repository\ReturnsRepository;
+use App\Services\RequestCheckerService;
+use App\Services\ReturnsService\ReturnsService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,6 +18,38 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/returns')]
 final class ReturnsController extends AbstractController
 {
+
+    private const REQUIRED_FIELDS_FOR_CREATE_RETURN = [
+        'borrow_id',
+        'return_date',
+        'fine_amount',
+        'condition',
+    ];
+
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private ReturnsService $returnsService,
+        private RequestCheckerService $requestCheckerService
+    ) {}
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/', name: 'app_post_return_item', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $this->requestCheckerService->check($requestData,self::REQUIRED_FIELDS_FOR_CREATE_RETURN);
+        $product = $this->returnsService->createReturn(
+            $requestData['borrow_id'],
+            $requestData['return_date'],
+            $requestData['condition'],
+            $requestData['fine_amount']
+        );
+        $this->entityManager->flush();
+        return new JsonResponse($product, Response::HTTP_CREATED);
+        }
+
     #[Route(name: 'app_returns_index', methods: ['GET'])]
     public function index(ReturnsRepository $returnsRepository): Response
     {
@@ -22,19 +58,19 @@ final class ReturnsController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_returns_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_returns_new', methods: ['GET'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $return = new Returns();
         $form = $this->createForm(ReturnsType::class, $return);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($return);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_returns_index', [], Response::HTTP_SEE_OTHER);
-        }
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $entityManager->persist($return);
+//            $entityManager->flush();
+//
+//            return $this->redirectToRoute('app_returns_index', [], Response::HTTP_SEE_OTHER);
+//        }
 
         return $this->render('returns/new.html.twig', [
             'return' => $return,

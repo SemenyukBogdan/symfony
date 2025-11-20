@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Authors;
+use App\Entity\Author;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +22,7 @@ class AuthorsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Authors::class,
+            'data_class' => Author::class,
         ]);
     }
 }

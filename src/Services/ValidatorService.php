@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Entity\Authors;
-use App\Entity\Readers;
+use App\Entity\Author;
+use App\Entity\Reader;
 
 class ValidatorService
 {
 
 
-    public function validateAuthor(Authors $author) : array
+    public function validateAuthor(Author $author) : array
     {
         $errors = [];
         $first_name = $author->getFirstName() ?? '';
@@ -23,6 +23,7 @@ class ValidatorService
 
         if (mb_strlen($first_name) < 3) {
             $errors[] = 'Імʼя автора повинно містити щонайменше 3 символи.';
+            return $errors;
         }
          if (trim($second_name) === '') {
             $errors[] = 'Прізвище автора не може бути порожнім.';
@@ -31,22 +32,24 @@ class ValidatorService
 
         if (mb_strlen($second_name) < 3) {
             $errors[] = 'Прізвище автора повинно містити щонайменше 3 символи.';
+            return $errors;
         }
 
         if (preg_match('/\d/', $first_name)) {
             $errors[] = 'Імʼя автора не повинно містити цифри.';
+            return $errors;
         }
         if (preg_match('/\d/', $second_name)) {
             $errors[] = 'Прізвище автора не повинно містити цифри.';
+            return $errors;
         }
-
 
         return $errors;
 
     }
 
 
-    public function validateReader(Readers $reader) : array{
+    public function validateReader(Reader $reader) : array{
         $errors = [];
 
         $full_name = $reader->getFullName();

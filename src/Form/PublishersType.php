@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Publishers;
+use App\Entity\Publisher;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +21,7 @@ class PublishersType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Publishers::class,
+            'data_class' => Publisher::class,
         ]);
     }
 }

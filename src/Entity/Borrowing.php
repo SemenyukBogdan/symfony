@@ -2,33 +2,33 @@
 
 namespace App\Entity;
 
-use App\Entity\BookCopies;
-use App\Entity\Librarians;
-use App\Entity\Readers;
+use App\Entity\BookCopy;
+use App\Entity\Librarian;
+use App\Entity\Reader;
 use App\Repository\BorrowingsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BorrowingsRepository::class)]
 #[ORM\Table(name: 'borrowings')]
-class Borrowings
+class Borrowing
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: BookCopies::class, inversedBy: 'borrowings')]
+    #[ORM\ManyToOne(targetEntity: BookCopy::class, inversedBy: 'borrowings')]
     #[ORM\JoinColumn(name: 'book_copy_id', nullable: false)]
-    private ?BookCopies $bookCopy = null;
+    private ?BookCopy $bookCopy = null;
 
-    #[ORM\ManyToOne(targetEntity: Readers::class, inversedBy: 'borrowings')]
+    #[ORM\ManyToOne(targetEntity: Reader::class, inversedBy: 'borrowings')]
     #[ORM\JoinColumn(name: 'reader_id', nullable: false)]
-    private ?Readers $reader = null;
+    private ?Reader $reader = null;
 
-    #[ORM\ManyToOne(targetEntity: Librarians::class, inversedBy: 'borrowings')]
+    #[ORM\ManyToOne(targetEntity: Librarian::class, inversedBy: 'borrowings')]
     #[ORM\JoinColumn(name: 'librarian_id', nullable: false)]
-    private ?Librarians $librarian = null;
+    private ?Librarian $librarian = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $borrowDate = null;
@@ -41,36 +41,36 @@ class Borrowings
         return $this->id;
     }
 
-    public function getBookCopy(): ?BookCopies
+    public function getBookCopy(): ?BookCopy
     {
         return $this->bookCopy;
     }
 
-    public function setBookCopy(BookCopies $bookCopy): static
+    public function setBookCopy(BookCopy $bookCopy): static
     {
         $this->bookCopy = $bookCopy;
 
         return $this;
     }
 
-    public function getReader(): ?Readers
+    public function getReader(): ?Reader
     {
         return $this->reader;
     }
 
-    public function setReader(?Readers $reader): static
+    public function setReader(?Reader $reader): static
     {
         $this->reader = $reader;
 
         return $this;
     }
 
-    public function getLibrarian(): ?Librarians
+    public function getLibrarian(): ?Librarian
     {
         return $this->librarian;
     }
 
-    public function setLibrarian(?Librarians $librarian): static
+    public function setLibrarian(?Librarian $librarian): static
     {
         $this->librarian = $librarian;
 

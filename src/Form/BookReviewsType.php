@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\BookReviews;
-use App\Entity\Readers;
+use App\Entity\BookReview;
+use App\Entity\Reader;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,7 +18,7 @@ class BookReviewsType extends AbstractType
             ->add('comment')
             ->add('created_at')
             ->add('reader_id', EntityType::class, [
-                'class' => readers::class,
+                'class' => Reader::class,
                 'choice_label' => 'id',
             ])
         ;
@@ -27,7 +27,7 @@ class BookReviewsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => BookReviews::class,
+            'data_class' => BookReview::class,
         ]);
     }
 }

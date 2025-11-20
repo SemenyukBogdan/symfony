@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BooksRepository::class)]
-class Books
+class Book
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,13 +21,13 @@ class Books
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Authors $author_id = null;
+    private ?Author $author_id = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
-    private ?genres $пgenre_id = null;
+    private ?Genre $пgenre_id = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
-    private ?Publishers $publisher_id = null;
+    private ?Publisher $publisher_id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $year = null;
@@ -36,9 +36,9 @@ class Books
     private ?string $description = null;
 
     /**
-     * @var Collection<int, BookCopies>
+     * @var Collection<int, BookCopy>
      */
-    #[ORM\OneToMany(targetEntity: BookCopies::class, mappedBy: 'book_id')]
+    #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book_id')]
     private Collection $book_copy_id;
 
     public function __construct()
@@ -63,36 +63,36 @@ class Books
         return $this;
     }
 
-    public function getAuthorId(): ?Authors
+    public function getAuthorId(): ?Author
     {
         return $this->author_id;
     }
 
-    public function setAuthorId(?Authors $author_id): static
+    public function setAuthorId(?Author $author_id): static
     {
         $this->author_id = $author_id;
 
         return $this;
     }
 
-    public function getпgenreId(): ?genres
+    public function getпgenreId(): ?Genre
     {
         return $this->пgenre_id;
     }
 
-    public function setпgenreId(?genres $пgenre_id): static
+    public function setпgenreId(?Genre $пgenre_id): static
     {
         $this->пgenre_id = $пgenre_id;
 
         return $this;
     }
 
-    public function getPublisherId(): ?Publishers
+    public function getPublisherId(): ?Publisher
     {
         return $this->publisher_id;
     }
 
-    public function setPublisherId(?Publishers $publisher_id): static
+    public function setPublisherId(?Publisher $publisher_id): static
     {
         $this->publisher_id = $publisher_id;
 
@@ -124,14 +124,14 @@ class Books
     }
 
     /**
-     * @return Collection<int, BookCopies>
+     * @return Collection<int, BookCopy>
      */
     public function getBookCopyId(): Collection
     {
         return $this->book_copy_id;
     }
 
-    public function addBookCopyId(BookCopies $bookCopyId): static
+    public function addBookCopyId(BookCopy $bookCopyId): static
     {
         if (!$this->book_copy_id->contains($bookCopyId)) {
             $this->book_copy_id->add($bookCopyId);
@@ -141,7 +141,7 @@ class Books
         return $this;
     }
 
-    public function removeBookCopyId(BookCopies $bookCopyId): static
+    public function removeBookCopyId(BookCopy $bookCopyId): static
     {
         if ($this->book_copy_id->removeElement($bookCopyId)) {
             // set the owning side to null (unless already changed)

@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Borrowings;
+use App\Entity\Borrowing;
 use App\Repository\LibrariansRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LibrariansRepository::class)]
-class Librarians
+class Librarian
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,9 +27,9 @@ class Librarians
     private ?string $phone = null;
 
     /**
-     * @var Collection<int, Borrowings>
+     * @var Collection<int, Borrowing>
      */
-    #[ORM\OneToMany(targetEntity: Borrowings::class, mappedBy: 'librarian_id')]
+    #[ORM\OneToMany(targetEntity: Borrowing::class, mappedBy: 'librarian_id')]
     private Collection $borrowings;
 
     public function __construct()
@@ -79,14 +79,14 @@ class Librarians
     }
 
     /**
-     * @return Collection<int, Borrowings>
+     * @return Collection<int, Borrowing>
      */
     public function getBorrowings(): Collection
     {
         return $this->borrowings;
     }
 
-    public function addBorrowing(Borrowings $borrowing): static
+    public function addBorrowing(Borrowing $borrowing): static
     {
         if (!$this->borrowings->contains($borrowing)) {
             $this->borrowings->add($borrowing);
@@ -96,7 +96,7 @@ class Librarians
         return $this;
     }
 
-    public function removeBorrowing(Borrowings $borrowing): static
+    public function removeBorrowing(Borrowing $borrowing): static
     {
         if ($this->borrowings->removeElement($borrowing)) {
             // set the owning side to null (unless already changed)

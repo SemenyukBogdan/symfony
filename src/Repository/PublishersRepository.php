@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\Publishers;
+use App\Entity\Publisher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Publishers>
+ * @extends ServiceEntityRepository<Publisher>
  */
 class PublishersRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Publishers::class);
+        parent::__construct($registry, Publisher::class);
     }
 
     //    /**

@@ -2,18 +2,50 @@
 
 namespace App\Controller;
 
-use App\Entity\Publishers;
+use App\Entity\Publisher;
 use App\Form\PublishersType;
 use App\Repository\PublishersRepository;
+use App\Services\PublishersService\PublishersService;
+use App\Services\RequestCheckerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/publishers')]
 final class PublishersController extends AbstractController
-{
+    {    private const REQUIRED_FIELDS_FOR_CREATE_PUBLISHER = [
+        'name',
+        'country',
+        'founded_year',
+    ];
+
+
+    /**
+     * @throws Exception
+     */
+    public function __construct(
+        private RequestCheckerService $requestCheckerService,
+        private EntityManagerInterface $entityManager,
+        private PublishersService $publishersService,
+    ) {}
+    #[Route('/', name: 'app_post_products_item', methods: ['POST'])]
+    public function create(Request $request): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true);
+        $this->requestCheckerService->check($requestData,self::REQUIRED_FIELDS_FOR_CREATE_PUBLISHER);
+        $publisher = $this->publishersService->createPublishers(
+            $requestData['name'],
+            $requestData['country'],
+            $requestData['founded_year']
+        );
+        $this->entityManager->flush();
+        return new JsonResponse($publisher, Response::HTTP_CREATED);
+        }
+
     #[Route(name: 'app_publishers_index', methods: ['GET'])]
     public function index(PublishersRepository $publishersRepository): Response
     {
@@ -22,19 +54,19 @@ final class PublishersController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_publishers_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_publishers_new', methods: ['GET'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $publisher = new Publishers();
+        $publisher = new Publisher();
         $form = $this->createForm(PublishersType::class, $publisher);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($publisher);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_publishers_index', [], Response::HTTP_SEE_OTHER);
-        }
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $entityManager->persist($publisher);
+//            $entityManager->flush();
+//
+//            return $this->redirectToRoute('app_publishers_index', [], Response::HTTP_SEE_OTHER);
+//        }
 
         return $this->render('publishers/new.html.twig', [
             'publisher' => $publisher,
@@ -43,7 +75,7 @@ final class PublishersController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_publishers_show', methods: ['GET'])]
-    public function show(Publishers $publisher): Response
+    public function show(Publisher $publisher): Response
     {
         return $this->render('publishers/show.html.twig', [
             'publisher' => $publisher,
@@ -51,7 +83,7 @@ final class PublishersController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_publishers_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Publishers $publisher, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Publisher $publisher, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(PublishersType::class, $publisher);
         $form->handleRequest($request);
@@ -69,7 +101,7 @@ final class PublishersController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_publishers_delete', methods: ['POST'])]
-    public function delete(Request $request, Publishers $publisher, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Publisher $publisher, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$publisher->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($publisher);

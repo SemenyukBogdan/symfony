@@ -1,0 +1,1 @@
+curl -f -L  -o ./phpstorm_xdebug.zip "https://packages.jetbrains.team/files/p/ij/xdebug-validation-script/script/phpstorm_xdebug_validator.zip";unzip ./phpstorm_xdebug.zip -d .;rm -f ./phpstorm_xdebug.zip
