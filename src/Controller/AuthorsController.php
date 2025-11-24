@@ -23,6 +23,7 @@ use DateTime;
 final class AuthorsController extends AbstractController
 {
 
+    private const ITEMS_PER_PAGE = 10;
     private const REQUIRED_FIELDS_FOR_CREATE_PRODUCT = [
         'first_name',
         'second_name',
@@ -36,13 +37,13 @@ final class AuthorsController extends AbstractController
         private AuthorsService $authorsService,
     ) {}
 
-    #[Route(name: 'app_authors_index', methods: ['GET'])]
-    public function index(AuthorsRepository $authorsRepository): Response
-    {
-        return $this->render('authors/index.html.twig', [
-            'authors' => $authorsRepository->findAll(),
-        ]);
-    }
+//    #[Route(name: 'app_authors_index', methods: ['GET'])]
+//    public function index(AuthorsRepository $authorsRepository): Response
+//    {
+//        return $this->render('authors/index.html.twig', [
+//            'authors' => $authorsRepository->findAll(),
+//        ]);
+//    }
 
 //    #[Route('/new', name: 'app_authors_new', methods: ['GET', 'POST'])]
 //    public function new(Request $request, AuthorsService $authorsService): Response
@@ -87,6 +88,38 @@ final class AuthorsController extends AbstractController
             $this->entityManager->flush();
             return new JsonResponse($author, Response::HTTP_CREATED);
         }
+
+
+    #[Route('/',name: 'app_get_authors_collection', methods: ['GET'])]
+    public function getAuthorsCollection(Request $request): JsonResponse{
+
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData = $this->entityManager->getRepository(Author::class)->getAllAuthorsByFilter($requestData, $itemsPerPage, $page);
+        return new JsonResponse($productsData);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/{id}', name: 'app_authors_show', methods: ['GET'])]
     public function show(Author $author): Response
     {

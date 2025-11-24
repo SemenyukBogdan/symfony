@@ -16,8 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/publishers')]
-final class PublishersController extends AbstractController
-    {    private const REQUIRED_FIELDS_FOR_CREATE_PUBLISHER = [
+final class PublishersController extends AbstractController{
+
+    private const ITEMS_PER_PAGE = 10;
+
+    private const REQUIRED_FIELDS_FOR_CREATE_PUBLISHER = [
         'name',
         'country',
         'founded_year',
@@ -46,13 +49,32 @@ final class PublishersController extends AbstractController
         return new JsonResponse($publisher, Response::HTTP_CREATED);
         }
 
-    #[Route(name: 'app_publishers_index', methods: ['GET'])]
-    public function index(PublishersRepository $publishersRepository): Response
+
+    #[Route('/', name: 'app_get_publisher_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
     {
-        return $this->render('publishers/index.html.twig', [
-            'publishers' => $publishersRepository->findAll(),
-        ]);
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(Publisher::class)->getAllPublishersByFilter($requestData, $itemsPerPage, $page);
+        return new JsonResponse($productsData);
+
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    #[Route(name: 'app_publishers_index', methods: ['GET'])]
+//    public function index(PublishersRepository $publishersRepository): Response
+//    {
+//        return $this->render('publishers/index.html.twig', [
+//            'publishers' => $publishersRepository->findAll(),
+//        ]);
+//    }
 
     #[Route('/new', name: 'app_publishers_new', methods: ['GET'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

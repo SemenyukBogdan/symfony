@@ -20,7 +20,8 @@ use App\Services\BooksService\BooksService;
 final class BooksController extends AbstractController
 {
 
-    const REQUIRED_FIELDS_FOR_CREATE_BOOK=[
+    private const ITEMS_PER_PAGE = 10;
+    private const REQUIRED_FIELDS_FOR_CREATE_BOOK=[
         'title',
         'author_id',
         'genre_id',
@@ -33,13 +34,7 @@ final class BooksController extends AbstractController
         private BooksService $booksService,
         private RequestCheckerService $requestCheckerService
     ) {}
-    #[Route(name: 'app_books_index', methods: ['GET'])]
-    public function index(BooksRepository $booksRepository): Response
-    {
-        return $this->render('books/index.html.twig', [
-            'books' => $booksRepository->findAll(),
-        ]);
-    }
+//
 
 
     /**
@@ -61,6 +56,39 @@ final class BooksController extends AbstractController
         $this->entityManager->flush();
         return new JsonResponse($product, Response::HTTP_CREATED);
 }
+
+
+
+    #[Route('/', name: 'app_get_books_info_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
+    {
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(Book::class)->getAllBooksByFilter($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($productsData);
+        }
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    #[Route(name: 'app_books_index', methods: ['GET'])]
+//    public function index(BooksRepository $booksRepository): Response
+//    {
+//        return $this->render('books/index.html.twig', [
+//            'books' => $booksRepository->findAll(),
+//        ]);
+//    }
+
+
     #[Route('/new', name: 'app_books_new', methods: ['GET'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

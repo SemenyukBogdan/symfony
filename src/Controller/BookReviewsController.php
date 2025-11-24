@@ -8,6 +8,7 @@ use App\Repository\BookReviewsRepository;
 use App\Services\BookReviewsService\BookReviewsService;
 use App\Services\RequestCheckerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BookReviewsController extends AbstractController
 {
 
+    private const ITEMS_PER_PAGE = 10;
     private const REQUIRED_FIELDS_FOR_CREATE_BOOK_REVIEW = [
         'book_id',
         'reader_id',
@@ -32,7 +34,7 @@ final class BookReviewsController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route('/products', name: 'app_post_products_item', methods: ['POST'])]
+    #[Route('/', name: 'app_post_products_item', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
@@ -47,13 +49,32 @@ final class BookReviewsController extends AbstractController
         return new JsonResponse($bookReview, Response::HTTP_CREATED);
 }
 
-    #[Route(name: 'app_book_reviews_index', methods: ['GET'])]
-    public function index(BookReviewsRepository $bookReviewsRepository): Response
+    #[Route('/', name: 'app_get_book_reviews_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
     {
-        return $this->render('book_reviews/index.html.twig', [
-            'book_reviews' => $bookReviewsRepository->findAll(),
-        ]);
-    }
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(BookReview::class)->getAllBookReviewsByFilter($requestData, $itemsPerPage, $page);
+
+        return new JsonResponse($productsData);
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    #[Route(name: 'app_book_reviews_index', methods: ['GET'])]
+//    public function index(BookReviewsRepository $bookReviewsRepository): Response
+//    {
+//        return $this->render('book_reviews/index.html.twig', [
+//            'book_reviews' => $bookReviewsRepository->findAll(),
+//        ]);
+//    }
 
 //    #[Route('/new', name: 'app_book_reviews_new', methods: ['GET', 'POST'])]
 //    public function new(Request $request, LibrarySevice $libraryService): Response

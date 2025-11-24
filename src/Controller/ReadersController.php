@@ -22,6 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReadersController extends AbstractController
 {
 
+    private const ITEMS_PER_PAGE = 10;
     private const REQUIRED_FIELDS_FOR_CREATE_READER = [
         'phone',
         'full_name',
@@ -49,13 +50,35 @@ final class ReadersController extends AbstractController
     $this->entityManager->flush();
     return new JsonResponse($product, Response::HTTP_CREATED);
 }
-    #[Route(name: 'app_readers_index', methods: ['GET'])]
-    public function index(ReadersRepository $readersRepository): Response
+
+
+
+    #[Route('/', name: 'app_get_readers_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
     {
-        return $this->render('readers/index.html.twig', [
-            'readers' => $readersRepository->findAll(),
-        ]);
-    }
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(Reader::class)->getAllReadersByFilter($requestData, $itemsPerPage, $page);
+return new JsonResponse($productsData);
+}
+
+
+
+
+
+//    #[Route(name: 'app_readers_index', methods: ['GET'])]
+//    public function index(ReadersRepository $readersRepository): Response
+//    {
+//        return $this->render('readers/index.html.twig', [
+//            'readers' => $readersRepository->findAll(),
+//        ]);
+//    }
 
     #[Route('/new', name: 'app_readers_new', methods: ['GET', 'POST'])]
     public function new(Request $request, LibrarySevice $libraryService, ValidatorService $validatorService): Response

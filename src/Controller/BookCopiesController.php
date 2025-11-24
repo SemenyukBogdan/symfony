@@ -23,6 +23,7 @@ use App\Services\BookCopiesService\BookCopiesService;
 final class BookCopiesController extends AbstractController
 {
 
+    private const ITEMS_PER_PAGE = 10;
     private const REQUIRED_FIELDS_FOR_CREATE_PRODUCT = [
         'book_id',
         'inventory_number',
@@ -35,13 +36,13 @@ final class BookCopiesController extends AbstractController
         private BookCopiesService $bookCopiesService
     ) {}
 
-    #[Route(name: 'app_book_copies_index', methods: ['GET'])]
-    public function index(BookCopiesRepository $bookCopiesRepository): Response
-    {
-        return $this->render('book_copies/index.html.twig', [
-            'book_copies' => $bookCopiesRepository->findAll(),
-        ]);
-    }
+//    #[Route(name: 'app_book_copies_index', methods: ['GET'])]
+//    public function index(BookCopiesRepository $bookCopiesRepository): Response
+//    {
+//        return $this->render('book_copies/index.html.twig', [
+//            'book_copies' => $bookCopiesRepository->findAll(),
+//        ]);
+//    }
 
 //    #[Route('/new', name: 'app_book_copies_new', methods: ['GET', 'POST'])]
 //    public function new(Request $request,BookCopiesService $bookCopiesService): Response
@@ -86,6 +87,28 @@ final class BookCopiesController extends AbstractController
         $this->entityManager->flush();
         return new JsonResponse($bookCopy, Response::HTTP_CREATED);
     }
+
+
+    #[Route('/', name: 'app_get_books_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
+    {
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(BookCopy::class)->getAllBooksByFilter($requestData, $itemsPerPage, $page);
+return new JsonResponse($productsData);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     #[Route('/{id}', name: 'app_book_copies_show', methods: ['GET'])]
     public function show(BookCopy $bookCopy): Response
     {

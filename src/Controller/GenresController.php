@@ -19,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/genres')]
 final class GenresController extends AbstractController
 {
+    private const ITEMS_PER_PAGE = 10;
     private const REQUIRED_FIELDS_FOR_CREATE_GENRE = [
         'name',
     ];
@@ -44,6 +45,29 @@ final class GenresController extends AbstractController
     }
 
 
+    #[Route('/', name: 'app_get_genres_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
+    {
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(Genre::class)->getAllGenresByFilter($requestData, $itemsPerPage, $page);
+        return new JsonResponse($productsData);
+    }
+
+
+
+
+
+
+
+
+    //////////////////////////////////////////////////////////////////////
 
     #[Route(name: 'app_genres_index', methods: ['GET'])]
     public function index(GenresRepository $genresRepository): Response

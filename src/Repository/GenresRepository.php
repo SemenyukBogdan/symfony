@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Book;
 use App\Entity\Genre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * @extends ServiceEntityRepository<Genre>
@@ -40,4 +43,48 @@ class GenresRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * @param array $data
+     * @param int $itemsPerPage
+     * @param int $page
+     * @return mixed
+     */
+    #[ArrayShape([
+        'products' => "mixed",
+        'totalPageCount' => "float",
+        'totalItems' => "int"
+    ])] public function getAllGenresByFilter(array $data, int $itemsPerPage, int $page): array
+    {
+        $queryBuilder = $this->createQueryBuilder('genre');
+        if (isset($data['name'])) {
+            $queryBuilder->andWhere('genre.name LIKE :name')
+                ->setParameter('name', '%' . $data['name'] . '%');
+        }
+        $paginator = new Paginator ($queryBuilder);
+        $totalItems = count($paginator);
+        $pagesCount = ceil($totalItems / $itemsPerPage);
+        $paginator
+            ->getQuery()
+
+            ->setFirstResult($itemsPerPage * ($page - 1))
+            ->setMaxResults($itemsPerPage);
+
+
+
+        $genre = $paginator->getQuery()->getResult();
+
+        $genreArray = array_map(static function (Genre $genre): array {
+            return [
+                'id'          => $genre->getId(),
+                'name'          => $genre->getName(),
+            ];
+        }, $genre);
+
+        return [
+            'genres' => $genreArray,
+            'totalPageCount' => $pagesCount,
+            'totalItems' => $totalItems
+        ];
+    }
 }

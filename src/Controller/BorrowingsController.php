@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BorrowingsController extends AbstractController
 {
 
+    private const ITEMS_PER_PAGE = 10;
     const REQUIRED_FIELDS_FOR_CREATE_BORROWING=[
         'book_copy_id',
         'reader_id',
@@ -52,13 +53,34 @@ final class BorrowingsController extends AbstractController
         return new JsonResponse($product, Response::HTTP_CREATED);
         }
 
-    #[Route(name: 'app_borrowings_index', methods: ['GET'])]
-    public function index(BorrowingsRepository $borrowingsRepository): Response
+
+
+    #[Route('/', name: 'app_get_borrowing_collection', methods: ['GET'])]
+    public function getCollection(Request $request): JsonResponse
     {
-        return $this->render('borrowings/index.html.twig', [
-            'borrowings' => $borrowingsRepository->findAll(),
-        ]);
+        $requestData = $request->query->all();
+        $itemsPerPage = (int)isset($requestData['itemsPerPage'])
+            ? $requestData['itemsPerPage']
+            : self::ITEMS_PER_PAGE;
+        $page = (int)isset($requestData['page'])
+            ? $requestData['page']
+            : 1;
+        $productsData =
+            $this->entityManager->getRepository(Borrowing::class)->getAllBorrowingsByFilter($requestData, $itemsPerPage, $page);
+        return new JsonResponse($productsData);
     }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    #[Route(name: 'app_borrowings_index', methods: ['GET'])]
+//    public function index(BorrowingsRepository $borrowingsRepository): Response
+//    {
+//        return $this->render('borrowings/index.html.twig', [
+//            'borrowings' => $borrowingsRepository->findAll(),
+//        ]);
+//    }
 
     #[Route('/new', name: 'app_borrowings_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
