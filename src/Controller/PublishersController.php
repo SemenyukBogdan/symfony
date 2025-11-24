@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/publishers')]
+#[Route('/api/publishers')]
 final class PublishersController extends AbstractController{
 
     private const ITEMS_PER_PAGE = 10;

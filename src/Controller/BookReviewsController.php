@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/book/reviews')]
+#[Route('/api/book/reviews')]
 final class BookReviewsController extends AbstractController
 {
 

@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Services\BookCopiesService\BookCopiesService;
 
 
-#[Route('/book/copies')]
+#[Route('/api/book/copies')]
 final class BookCopiesController extends AbstractController
 {
 

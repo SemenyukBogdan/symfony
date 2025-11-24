@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/genres')]
+#[Route('/api/genres')]
 final class GenresController extends AbstractController
 {
     private const ITEMS_PER_PAGE = 10;

@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Services\BooksService\BooksService;
 
-#[Route('/books')]
+#[Route('/api/books')]
 final class BooksController extends AbstractController
 {
 

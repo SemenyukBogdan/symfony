@@ -19,7 +19,7 @@ use App\Services\AuthorsService\AuthorsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use DateTime;
 
-#[Route('/authors')]
+#[Route('/api/authors')]
 final class AuthorsController extends AbstractController
 {
 
