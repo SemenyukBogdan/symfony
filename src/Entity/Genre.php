@@ -60,7 +60,7 @@ class Genre
     {
         if (!$this->books->contains($book)) {
             $this->books->add($book);
-            $book->setпgenreId($this);
+            $book->setGenreId($this);
         }
 
         return $this;
@@ -70,8 +70,8 @@ class Genre
     {
         if ($this->books->removeElement($book)) {
             // set the owning side to null (unless already changed)
-            if ($book->getпgenreId() === $this) {
-                $book->setпgenreId(null);
+            if ($book->getGenreId() === $this) {
+                $book->setGenreId(null);
             }
         }
 

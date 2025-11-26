@@ -80,7 +80,7 @@ class BooksService
         $Books
             ->setTitle($title)
         ->setAuthorId($author)
-        ->setпgenreId($genre)
+        ->setGenreId($genre)
         ->setPublisherId($publisher)
         ->setYear($year)
         ->setDescription($description);

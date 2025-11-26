@@ -2,11 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\BooksRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+
+
+#[ApiResource(
+    operations: [
+        new GetCollection(normalizationContext: ['groups' => ['book:read:collection']]),
+        new Post(denormalizationContext: ['groups' => ['book:write']]),
+        new Get(normalizationContext: ['groups' => ['book:read:item']]),
+        new Patch(denormalizationContext: ['groups' => ['book:write']]),
+        new Delete(),
+    ]
+)]
 
 #[ORM\Entity(repositoryClass: BooksRepository::class)]
 class Book
@@ -14,31 +32,39 @@ class Book
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['book:read:collection', 'book:read:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['book:read:collection', 'book:read:item', 'book:write'])]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['book:read:item', 'book:write'])]
     private ?Author $author_id = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
-    private ?Genre $пgenre_id = null;
+    #[Groups(['book:read:item', 'book:write'])]
+    private ?Genre $genre_id = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
+    #[Groups(['book:read:item', 'book:write'])]
     private ?Publisher $publisher_id = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['book:read:collection', 'book:read:item', 'book:write'])]
     private ?int $year = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['book:read:item', 'book:write'])]
     private ?string $description = null;
 
     /**
      * @var Collection<int, BookCopy>
      */
     #[ORM\OneToMany(targetEntity: BookCopy::class, mappedBy: 'book_id')]
+    #[Groups(['book:read:item'])]
     private Collection $book_copy_id;
 
     public function __construct()
@@ -75,14 +101,14 @@ class Book
         return $this;
     }
 
-    public function getпgenreId(): ?Genre
+    public function getGenreId(): ?Genre
     {
-        return $this->пgenre_id;
+        return $this->genre_id;
     }
 
-    public function setпgenreId(?Genre $пgenre_id): static
+    public function setGenreId(?Genre $genre_id): static
     {
-        $this->пgenre_id = $пgenre_id;
+        $this->genre_id = $genre_id;
 
         return $this;
     }
