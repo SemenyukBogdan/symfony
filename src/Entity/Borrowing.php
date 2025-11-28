@@ -18,7 +18,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()],
+    operations: [new Get(), new GetCollection(), new Post(), new Patch(
+        uriTemplate: '/borrowings/{id}/extend',
+        controller: \App\Action\ExtendBorrowingAction::class,
+        normalizationContext: ['groups' => ['borrowing:read']],
+        deserialize: false,
+    )
+        , new Delete()],
     normalizationContext: ['groups' => ['borrowing:read']],
     denormalizationContext: ['groups' => ['borrowing:write']],
 )]

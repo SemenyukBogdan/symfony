@@ -18,7 +18,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()],
+    operations: [new Get(), new GetCollection(), new Post(), new Patch(
+        uriTemplate: '/readers/{id}/normalize-phone',
+        controller: \App\Action\NormalizeReaderPhoneAction::class,
+        normalizationContext: ['groups' => ['reader:read']],
+        output: false,
+        deserialize: false
+    )
+        , new Delete()],
     normalizationContext: ['groups' => ['reader:read']],
     denormalizationContext: ['groups' => ['reader:write']],
 )]
