@@ -10,26 +10,56 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete(),
+    ],
+    normalizationContext: ['groups' => ['author:read']],
+    denormalizationContext: ['groups' => ['author:write']],
+)]
+
 #[ORM\Entity(repositoryClass: AuthorsRepository::class)]
 class Author
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(['author:read'])]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['author:read', 'author:write'])]
+    #[Assert\NotBlank]
     private ?string $first_name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['author:read', 'author:write'])]
+    #[Assert\NotBlank]
     private ?string $second_name = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['author:read', 'author:write'])]
+    #[Assert\NotNull]
     private ?\DateTime $birth_date = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['author:read', 'author:write'])]
+    #[Assert\NotBlank]
     private ?string $country = null;
 
     /**
@@ -125,8 +155,5 @@ class Author
 
         return $this;
     }
-
-
-
 
 }

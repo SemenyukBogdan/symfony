@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Entity\Borrowing;
 use App\Repository\LibrariansRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,36 +16,50 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+
+#[ApiResource(
+    operations: [new Get(), new GetCollection(), new Post(), new Patch(), new Delete()],
+    normalizationContext: ['groups' => ['librarian:read']],
+    denormalizationContext: ['groups' => ['librarian:write']],
+)]
 #[ORM\Entity(repositoryClass: LibrariansRepository::class)]
 class Librarian implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['librarian:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['librarian:read','librarian:write'])]
     private ?string $full_name = null;
 
+
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['librarian:read','librarian:write'])]
     private ?string $position = null;
 
     #[ORM\Column(length: 12,unique: true)]
+    #[Groups(['librarian:read','librarian:write'])]
     private ?string $phone = null;
 
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['librarian:read','librarian:write'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['librarian:read','librarian:write'])]
     private ?string $password = null;
 
 
     /**
      * @var Collection<int, Borrowing>
      */
-    #[ORM\OneToMany(targetEntity: Borrowing::class, mappedBy: 'librarian_id')]
+    #[ORM\OneToMany(targetEntity: Borrowing::class, mappedBy: 'librarian')]
     private Collection $borrowings;
 
     public function __construct()

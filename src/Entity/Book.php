@@ -19,9 +19,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(normalizationContext: ['groups' => ['book:read:collection']]),
-        new Post(denormalizationContext: ['groups' => ['book:write']]),
-        new Get(normalizationContext: ['groups' => ['book:read:item']]),
-        new Patch(denormalizationContext: ['groups' => ['book:write']]),
+        new Post(
+            normalizationContext: ['groups' => ['book:read:item']],
+            denormalizationContext: ['groups' => ['book:write']],
+        ),        new Get(normalizationContext: ['groups' => ['book:read:item']]),
+        new Patch(
+            normalizationContext: ['groups' => ['book:read:item']],
+            denormalizationContext: ['groups' => ['book:write']],
+        ),
         new Delete(),
     ]
 )]
