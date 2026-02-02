@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BookCopies{% endblock %}
+
+{% block body %}
+    <h1>BookCopies</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ book_copy.id }}</td>
+            </tr>
+            <tr>
+                <th>Inventory_number</th>
+                <td>{{ book_copy.inventoryNumber }}</td>
+            </tr>
+            <tr>
+                <th>Shelf_location</th>
+                <td>{{ book_copy.shelfLocation }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_book_copies_index') }}">back to list</a>
+
+    <a href="{{ path('app_book_copies_edit', {'id': book_copy.id}) }}">edit</a>
+
+    {{ include('book_copies/_delete_form.html.twig') }}
+{% endblock %}

@@ -13,6 +13,10 @@ services:
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
+    App\Services\EventListener\RuntimeConstraintExceptionListener:
+      tags:
+        - { name: kernel.event_listener, event: kernel.exception }
+
     App\:
         resource: '../src/'
         exclude:
@@ -20,5 +24,13 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
+    App\Action\:
+      resource: '../src/Action/'
+      tags: [ 'controller.service_arguments' ]
+
+    App\Extension\:
+      resource: '../src/Extension/'
+      tags: [ 'api_platform.doctrine.orm.query_extension.collection' ]
+
+  # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

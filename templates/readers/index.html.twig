@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Readers index{% endblock %}
+
+{% block body %}
+    <h1>Readers index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Full_name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Registration_date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reader in readers %}
+            <tr>
+                <td>{{ reader.id }}</td>
+                <td>{{ reader.fullName }}</td>
+                <td>{{ reader.phone }}</td>
+                <td>{{ reader.email }}</td>
+                <td>{{ reader.registrationDate ? reader.registrationDate|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_readers_show', {'id': reader.id}) }}">show</a>
+                    <a href="{{ path('app_readers_edit', {'id': reader.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_readers_new') }}">Create new</a>
+{% endblock %}

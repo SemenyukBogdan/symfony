@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BookCopies index{% endblock %}
+
+{% block body %}
+    <h1>BookCopies index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Inventory_number</th>
+                <th>Shelf_location</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for book_copy in book_copies %}
+            <tr>
+                <td>{{ book_copy.id }}</td>
+                <td>{{ book_copy.inventoryNumber }}</td>
+                <td>{{ book_copy.shelfLocation }}</td>
+                <td>
+                    <a href="{{ path('app_book_copies_show', {'id': book_copy.id}) }}">show</a>
+                    <a href="{{ path('app_book_copies_edit', {'id': book_copy.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_book_copies_new') }}">Create new</a>
+{% endblock %}
