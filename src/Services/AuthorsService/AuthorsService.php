@@ -58,8 +58,6 @@ class AuthorsService
             ->setSecondName($second_name)
             ->setBirthDate($birth_date)
             ->setCountry($country);
-        $this->requestCheckerService->validateRequestDataByConstraints($author);
-        $this->entityManager->persist($author);
 
         return $author;
     }
