@@ -24,57 +24,53 @@ class LibraryService
         $this->entityManager = $entityManager;
     }
 
+    private function persistAndFlush(object $entity): void
+    {
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+    }
+
     public function createAuthor(Author $author): void
     {
-        $this->entityManager->persist($author);
-        $this->entityManager->flush();
+        $this->persistAndFlush($author);
     }
  public function createBookCopy(BookCopy $bookCopies): void
     {
-        $this->entityManager->persist($bookCopies);
-        $this->entityManager->flush();
+        $this->persistAndFlush($bookCopies);
     }
 
     public function createBookReview(BookReview $bookReview): void
     {
-        $this->entityManager->persist($bookReview);
-        $this->entityManager->flush();
+        $this->persistAndFlush($bookReview);
     }
 
     public function createReader(Reader $reader): void
     {
-        $this->entityManager->persist($reader);
-        $this->entityManager->flush();
+        $this->persistAndFlush($reader);
     }
 
     public function createBook(Book $book): void
     {
-        $this->entityManager->persist($book);
-        $this->entityManager->flush();
+        $this->persistAndFlush($book);
     }
 
     public function createBorrowing(Borrowing $borrowing): void
     {
-        $this->entityManager->persist($borrowing);
-        $this->entityManager->flush();
+        $this->persistAndFlush($borrowing);
     }
 
     public function createGenres(Genre $genres): void
     {
-        $this->entityManager->persist($genres);
-        $this->entityManager->flush();
+        $this->persistAndFlush($genres);
     }
     public function createLibrarian(Librarian $librarian): void{
-        $this->entityManager->persist($librarian);
-        $this->entityManager->flush();
+        $this->persistAndFlush($librarian);
     }
     public function createPublisher(Publisher $publisher): void{
-        $this->entityManager->persist($publisher);
-        $this->entityManager->flush();
+        $this->persistAndFlush($publisher);
     }
     public function createReturn(Returns $return): void{
-        $this->entityManager->persist($return);
-        $this->entityManager->flush();
+        $this->persistAndFlush($return);
     }
 
 }
